@@ -7,6 +7,7 @@ N = 256;
 L = b - a;
 h = L / N;
 x = linspace(a, b, N + 1)';
+
 alpha = phi_f(a);
 beta = phi_f(b);
 
@@ -14,7 +15,7 @@ rho = rho_f(x(2:N));
 rho(1) = rho(1) + alpha / h^2;
 rho(N - 1) = rho(N - 1) + beta / h^2;
 
-phi = finite_difference_solver(a, b, a, b, N, rho);
+phi = q1_finite_difference_solver(a, b, a, b, N, rho);
 phi_exact = phi_f(x);
 
 plot(x, phi_exact, 'b', x, phi, 'ro-');

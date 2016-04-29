@@ -1,4 +1,4 @@
-function phi = finite_difference_solver(a, b, alpha, beta, N, rho)
+function phi = q1_finite_difference_solver(a, b, alpha, beta, N, rho)
 L = b - a;
 h = L / N;
 
