@@ -1,12 +1,12 @@
+phi_f = @(t) sin(2 * t);
+rho_f = @(t) 4 * sin(2 .* t);
+
 a = 0;
 b = 2 * pi;
 N = 8;
 L = b - a;
 h = L / N;
 x = linspace(a, b, N + 1)';
-
-phi_f = @(t) sin(2 * t);
-rho_f = @(t) 4 * sin(2 .* t);
 
 phi_exact = phi_f(x);
 rho = rho_f(x(1:N));
