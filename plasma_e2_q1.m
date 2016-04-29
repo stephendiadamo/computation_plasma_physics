@@ -3,7 +3,9 @@ rho_f = @(t) 2 .* sin(t) + t .* cos(t);
 
 a = 0;
 b = 2 * pi;
-N = 64;
+N = 256;
+L = b - a;
+h = L / N;
 x = linspace(a, b, N + 1)';
 alpha = phi_f(a);
 beta = phi_f(b);
@@ -22,29 +24,29 @@ ylabel('\phi(x)');
 legend('exact', 'numerical', 'location', 'northwest');
 
 % Diagnostics 
-% L1 = h * sum(abs(phi_exact - phi_num));
-% L2 = sqrt(h * sum(abs(phi_exact - phi_num).^2));
-% Linf = max(abs(phi_exact - phi_num));
-% save(['err' num2str(N)], 'h', 'L1', 'L2', 'Linf'); 
+% L1 = h * sum(abs(phi_exact - phi));
+% L2 = sqrt(h * sum(abs(phi_exact - phi).^2));
+% Linf = max(abs(phi_exact - phi));
+% save(['q1_err' num2str(N)], 'h', 'L1', 'L2', 'Linf'); 
 
-% NVec = [8 16 32 64 128 256];
-% hVec = zeros(6);
-% L1Vec = zeros(6);
-% L2Vec = zeros(6);
-% LInfVec = zeros(6);
+NVec = [8 16 32 64 128 256];
+hVec = zeros(6);
+L1Vec = zeros(6);
+L2Vec = zeros(6);
+LInfVec = zeros(6);
 
-% for i = 1:6
-%     err = load(['err' num2str(NVec(i)) '.mat']);
-% 
-%     hVec(i) = err.h;
-%     L1Vec(i) = err.L1;
-%     L2Vec(i) = err.L2;
-%     LInfVec(i) = err.Linf;
-% end
+for i = 1:6
+    err = load(['q1_err' num2str(NVec(i)) '.mat']);
 
-% loglog(hVec, L1Vec, 'o-b', hVec, L2Vec, 's-r', hVec, LInfVec, '+-g', ...
-%     hVec(1:3), 1e-1 * hVec(1:3).^2, '-k');
-% legend('L^1 error', 'L^2 error', 'L^\infty error', 'f(h) = 0.1 * h^2', ...
-%     'location', 'northwest');
-% xlabel('h');
-% ylabel('errors'); 
+    hVec(i) = err.h;
+    L1Vec(i) = err.L1;
+    L2Vec(i) = err.L2;
+    LInfVec(i) = err.Linf;
+end
+
+loglog(hVec, L1Vec, 'o-b', hVec, L2Vec, 's-r', hVec, LInfVec, '+-g', ...
+    hVec(1:3), 1e-1 * hVec(1:3).^2, '-k');
+legend('L^1 error', 'L^2 error', 'L^\infty error', 'f(h) = 0.1 * h^2', ...
+    'location', 'northwest');
+xlabel('h');
+ylabel('Errors'); 
