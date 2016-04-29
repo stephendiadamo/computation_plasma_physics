@@ -31,10 +31,10 @@ legend('exact', 'numerical', 'location', 'northwest');
 % save(['q1_err' num2str(N)], 'h', 'L1', 'L2', 'Linf'); 
 
 NVec = [8 16 32 64 128 256];
-hVec = zeros(6);
-L1Vec = zeros(6);
-L2Vec = zeros(6);
-LInfVec = zeros(6);
+hVec = zeros(6, 1);
+L1Vec = zeros(6, 1);
+L2Vec = zeros(6, 1);
+LInfVec = zeros(6, 1);
 
 for i = 1:6
     err = load(['q1_err' num2str(NVec(i)) '.mat']);
