@@ -3,7 +3,7 @@ rho_f = @(t) 4 * sin(2 .* t);
 
 a = 0;
 b = 2 * pi;
-N = 256;
+N = 8;
 L = b - a;
 h = L / N;
 x = linspace(a, b, N + 1)';
@@ -37,8 +37,10 @@ rho_2(1:N) = rho_f(x(1:N));
 phi_1 = A_1 \ rho_1;
 phi_2 = A_2 \ rho_2;
 
-solver_err_1 = max(abs(A_1 * phi_1 - rho_1));
-solver_err_2 = max(abs(A_2 * phi_2 - rho_2));
+% solver_err_1 = max(abs(A_1 * phi_1 - rho_1));
+% solver_err_2 = max(abs(A_2 * phi_2 - rho_2));
+% display(solver_err_1);
+% display(solver_err_2);
 
 phi_num_1 = [phi_1; phi_1(1)];
 phi_num_2 = [phi_2(1:N); phi_2(1)];
@@ -73,8 +75,8 @@ L2Vec_b = zeros(6, 1);
 LInfVec_b = zeros(6, 1);
 
 for i = 1:6
-    err_a = load(['q2_a_err' num2str(NVec(i)) '.mat']);
-    err_b = load(['q2_b_err' num2str(NVec(i)) '.mat']);
+    err_a = load(['q3_a_err' num2str(NVec(i)) '.mat']);
+    err_b = load(['q3_b_err' num2str(NVec(i)) '.mat']);
     
     hVec(i) = err_a.h;
     
