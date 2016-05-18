@@ -63,46 +63,46 @@ phi_num_2 = [phi_2(1:N); phi_2(1)];
 % save(['q3_a_err' num2str(N)], 'h', 'L1_a', 'L2_a', 'Linf_a');
 % save(['q3_b_err' num2str(N)], 'h', 'L1_b', 'L2_b', 'Linf_b');
 
-NVec = [8 16 32 64 128 256];
-hVec = zeros(6, 1);
+% NVec = [8 16 32 64 128 256];
+% hVec = zeros(6, 1);
+% 
+% L1Vec_a = zeros(6, 1);
+% L2Vec_a = zeros(6, 1);
+% LInfVec_a = zeros(6, 1);
+% 
+% L1Vec_b = zeros(6, 1);
+% L2Vec_b = zeros(6, 1);
+% LInfVec_b = zeros(6, 1);
+% 
+% for i = 1:6
+%     err_a = load(['q3_a_err' num2str(NVec(i)) '.mat']);
+%     err_b = load(['q3_b_err' num2str(NVec(i)) '.mat']);
+%     
+%     hVec(i) = err_a.h;
+%     
+%     L1Vec_a(i) = err_a.L1_a;
+%     L2Vec_a(i) = err_a.L2_a;
+%     LInfVec_a(i) = err_a.Linf_a;
+%     
+%     L1Vec_b(i) = err_b.L1_b;
+%     L2Vec_b(i) = err_b.L2_b;
+%     LInfVec_b(i) = err_b.Linf_b;
+% end
 
-L1Vec_a = zeros(6, 1);
-L2Vec_a = zeros(6, 1);
-LInfVec_a = zeros(6, 1);
-
-L1Vec_b = zeros(6, 1);
-L2Vec_b = zeros(6, 1);
-LInfVec_b = zeros(6, 1);
-
-for i = 1:6
-    err_a = load(['q3_a_err' num2str(NVec(i)) '.mat']);
-    err_b = load(['q3_b_err' num2str(NVec(i)) '.mat']);
-    
-    hVec(i) = err_a.h;
-    
-    L1Vec_a(i) = err_a.L1_a;
-    L2Vec_a(i) = err_a.L2_a;
-    LInfVec_a(i) = err_a.Linf_a;
-    
-    L1Vec_b(i) = err_b.L1_b;
-    L2Vec_b(i) = err_b.L2_b;
-    LInfVec_b(i) = err_b.Linf_b;
-end
-
-figure
-loglog(hVec, L1Vec_a, 'o-b', hVec, L2Vec_a, 's-r', hVec, LInfVec_a, '+-g', ...
-    hVec(1:3), 1e-1 * hVec(1:3).^2, '-k');
-legend('L^1 error', 'L^2 error', 'L^\infty error', 'f(h) = c * h^2', ...
-    'location', 'northwest');
-xlabel('h');
-ylabel('Errors'); 
-title('Possibility 1');
-
-figure 
-loglog(hVec, L1Vec_b, 'o-b', hVec, L2Vec_b, 's-r', hVec, LInfVec_b, '+-g', ...
-    hVec(1:3), 1e-1 * hVec(1:3).^2, '-k');
-legend('L^1 error', 'L^2 error', 'L^\infty error', 'f(h) = c * h^2', ...
-    'location', 'northwest');
-xlabel('h');
-ylabel('Errors'); 
-title('Possibility 2');
+% figure
+% loglog(hVec, L1Vec_a, 'o-b', hVec, L2Vec_a, 's-r', hVec, LInfVec_a, '+-g', ...
+%     hVec(1:3), 1e-1 * hVec(1:3).^2, '-k');
+% legend('L^1 error', 'L^2 error', 'L^\infty error', 'f(h) = c * h^2', ...
+%     'location', 'northwest');
+% xlabel('h');
+% ylabel('Errors'); 
+% title('Possibility 1');
+% 
+% figure 
+% loglog(hVec, L1Vec_b, 'o-b', hVec, L2Vec_b, 's-r', hVec, LInfVec_b, '+-g', ...
+%     hVec(1:3), 1e-1 * hVec(1:3).^2, '-k');
+% legend('L^1 error', 'L^2 error', 'L^\infty error', 'f(h) = c * h^2', ...
+%     'location', 'northwest');
+% xlabel('h');
+% ylabel('Errors'); 
+% title('Possibility 2');
