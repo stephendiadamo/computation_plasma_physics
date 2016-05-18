@@ -1,4 +1,5 @@
-function u = q1_e3_b_solver(L, T, a, sigma, N_x, N_t)
+% Wendroff solver
+function u = q1_e3_wendroff_solver(L, T, a, sigma, N_x, N_t)
 
 u = zeros(N_t, N_x);
 h = L / N_x;

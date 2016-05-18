@@ -1,4 +1,5 @@
-function u = q1_e3_a_solver(L, T, a, sigma, N_x, N_t)
+% Euler solver
+function u = q1_e3_euler_solver(L, T, a, sigma, N_x, N_t)
 
 u = zeros(N_t, N_x);
 h = L / N_x;
