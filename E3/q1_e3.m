@@ -2,8 +2,8 @@ L = 1;
 T = 1.5;
 a = 2; 
 sigma = 0.1;
-N_x = 100;
-N_t = 20000;
+N_x = 1000;
+N_t = 10000;
 
 x = linspace(0, L, N_x);
 t = linspace(0, T, N_t);
@@ -43,8 +43,8 @@ L2_euler = zeros(N_t, 1);
 L2_wendroff = zeros(N_t, 1);
 
 u_exact_max = zeros(N_t, 1);
-u1_max = zeros(N_t, 1);
-u2_max = zeros(N_t, 1);
+u_euler_max = zeros(N_t, 1);
+u_wandroff_max = zeros(N_t, 1);
 
 for n = 1:N_t
     mass_exact(n) = sum(u_exact(n, 1:end));
@@ -56,10 +56,11 @@ for n = 1:N_t
     L2_wendroff(n) = sqrt(sum(u_wendroff(n, 1:end).^2));
     
     u_exact_max(n) = max(u_exact(n, 1:end));
-    u1_max(n) = max(u_euler(n, 1:end));
-    u2_max(n) = max(u_wendroff(n, 1:end));
+    u_euler_max(n) = max(u_euler(n, 1:end));
+    u_wandroff_max(n) = max(u_wendroff(n, 1:end));
 end
 
+% If conservation holds, these should all be close to 0
 display('--- Conservation of Mass ---');
 str_1 = ['u_exact: ', num2str(max(mass_exact) - min(mass_exact))];
 str_2 = ['u_euler: ', num2str(max(mass_euler) - min(mass_euler))];
@@ -78,8 +79,8 @@ disp(str_3);
 
 display('--- Conservation of maximums ---');
 str_1 = ['u_exact: ', num2str(max(u_exact_max) - min(u_exact_max))];
-str_2 = ['u_euler: ', num2str(max(u1_max) - min(u1_max))];
-str_3 = sprintf('u_wendroff: %f', max(u2_max) - min(u2_max));
+str_2 = ['u_euler: ', num2str(max(u_euler_max) - min(u_euler_max))];
+str_3 = sprintf('u_wendroff: %f', max(u_wandroff_max) - min(u_wandroff_max));
 disp(str_1);
 disp(str_2);
 disp(str_3);
@@ -89,7 +90,7 @@ disp(str_3);
 % - u_euler has fairly good convervation
 % - u_wendroff also has fairly good conservation
 % - results improve as N_x increases
-plot(1:N_t, mass_exact, 1:N_t, mass_euler, 1:N_t, mass_wendroff);
+plot(t, mass_exact, t, mass_euler, t, mass_wendroff);
 title('Mass conservation');
 legend('Exact', 'Euler', 'Wendroff');
 figure;
@@ -99,7 +100,7 @@ figure;
 % - u_euler has fairly good convervation with periodic dips
 % - u_wendroff also has fairly good conservation 
 % - results improve as N_x increases
-plot(1:N_t, L2_exact, 1:N_t, L2_euler, 1:N_t, L2_wendroff);
+plot(t, L2_exact, t, L2_euler, t, L2_wendroff);
 title('L^2 norm conservation');
 legend('Exact', 'Euler', 'Wendroff');
 figure;
@@ -111,6 +112,6 @@ figure;
 % - u_euler slowly loses convservation, but this improves with bigger N_x, N_t
 % - u_wendroff is quite conserved, but at the bounds loses some conservation.
 %   This is again improved as N_x and N_t are increased. 
-plot(1:N_t, u_exact_max, 1:N_t, u1_max, 1:N_t, u2_max);
+plot(t, u_exact_max, t, u1_max, t, u_wandroff_max);
 title('Maximum of u conservation');
 legend('Exact', 'Euler', 'Wendroff');
