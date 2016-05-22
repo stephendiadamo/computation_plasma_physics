@@ -21,16 +21,16 @@ else
     return;
 end
 
-% u_0 = @(x) (1 / sqrt(2 * pi * sigma^2)) * exp(-1 * ...
-%     (x - (L / 2))^2 / (2 * sigma^2));
-% 
+u_0 = @(x) (1 / sqrt(2 * pi * sigma^2)) * exp(-1 * ...
+    (x - (L / 2))^2 / (2 * sigma^2));
+
 % u_exact = zeros(N_t, N_x);
 % for n = 1:N_t
 %     for j = 1:N_x
 %         u_exact(n, j) = u_0(mod(x(j) - a * t(n), L));
 %     end
 % end
-% 
+
 % u_euler = q1_e3_euler_solver(L, T, a, sigma, N_x, N_t);
 % u_wendroff = q1_e3_wendroff_solver(L, T, a, sigma, N_x, N_t);
 
@@ -128,56 +128,57 @@ end
 % legend('Exact', 'Euler', 'Wendroff');
 
 % Convergence tests
-% L1_euler = max(h * sum(abs(u_exact - u_euler)));
-% L2_euler = max(sqrt(h * sum(abs(u_exact - u_euler).^2)));
-% Linf_euler = max(max(abs(u_exact - u_euler)));
-% save(['euler_err' num2str(N_x)], 'h', 'L1_euler', 'L2_euler', 'Linf_euler'); 
+L1_euler = max(h * sum(abs(u_exact - u_euler)));
+L2_euler = max(sqrt(h * sum(abs(u_exact - u_euler).^2)));
+Linf_euler = max(max(abs(u_exact - u_euler)));
+save(['euler_err' num2str(N_x)], 'h', 'L1_euler', 'L2_euler', 'Linf_euler'); 
+
+L1_wendroff = max(h * sum(abs(u_exact - u_wendroff)));
+L2_wendroff = max(sqrt(h * sum(abs(u_exact - u_wendroff).^2)));
+Linf_wendroff= max(max(abs(u_exact - u_wendroff)));
+save(['wendroff_err' num2str(N_x)], 'h', 'L1_wendroff', 'L2_wendroff', 'Linf_wendroff'); 
+
+% NVec = [50 100 200 500 1000 2000];
+% hVec = zeros(6, 1);
 % 
-% L1_wendroff = max(h * sum(abs(u_exact - u_wendroff)));
-% L2_wendroff = max(sqrt(h * sum(abs(u_exact - u_wendroff).^2)));
-% Linf_wendroff= max(max(abs(u_exact - u_wendroff)));
-% save(['wendroff_err' num2str(N_x)], 'h', 'L1_wendroff', 'L2_wendroff', 'Linf_wendroff'); 
+% L1Vec_euler = zeros(6, 1);
+% L2Vec_euler = zeros(6, 1);
+% LInfVec_euler = zeros(6, 1);
+% 
+% L1Vec_wendroff = zeros(6, 1);
+% L2Vec_wendroff = zeros(6, 1);
+% LInfVec_wendroff = zeros(6, 1);
 
-NVec = [50 100 200 500 1000 2000];
-hVec = zeros(6, 1);
+% for i = 1:6
+%     err_a = load(['euler_err' num2str(NVec(i)) '.mat']);
+%     err_b = load(['wendroff_err' num2str(NVec(i)) '.mat']);
+%     
+%     hVec(i) = err_a.h;
+%     
+%     L1Vec_euler(i) = err_a.L1_euler;
+%     L2Vec_euler(i) = err_a.L2_euler;
+%     LInfVec_euler(i) = err_a.Linf_euler;
+%     
+%     L1Vec_wendroff(i) = err_b.L1_wendroff;
+%     L2Vec_wendroff(i) = err_b.L2_wendroff;
+%     LInfVec_wendroff(i) = err_b.Linf_wendroff;
+% end
 
-L1Vec_euler = zeros(6, 1);
-L2Vec_euler = zeros(6, 1);
-LInfVec_euler = zeros(6, 1);
+% figure
+% loglog(hVec, L1Vec_euler, 'o-b', hVec, L2Vec_euler, 's-r', hVec, LInfVec_euler, '+-g', ...
+%     hVec(1:3), 1e-1 * hVec(1:3), '-k');
+% legend('L^1 error', 'L^2 error', 'L^\infty error', 'f(h) = c * h^2', ...
+%     'location', 'northwest');
+% xlabel('h');
+% ylabel('Errors'); 
+% title('Case Euler');
+% 
+% figure 
+% loglog(hVec, L1Vec_wendroff, 'o-b', hVec, L2Vec_wendroff, 's-r', hVec, LInfVec_wendroff, '+-g', ...
+%     hVec(1:3), hVec(1:3).^2, '-k');
+% legend('L^1 error', 'L^2 error', 'L^\infty error', 'f(h) = c * h', ...
+%     'location', 'northwest');
+% xlabel('h');
+% ylabel('Errors'); 
+% title('Case Wendroff');
 
-L1Vec_wendroff = zeros(6, 1);
-L2Vec_wendroff = zeros(6, 1);
-LInfVec_wendroff = zeros(6, 1);
-
-for i = 1:6
-    err_a = load(['euler_err' num2str(NVec(i)) '.mat']);
-    err_b = load(['wendroff_err' num2str(NVec(i)) '.mat']);
-    
-    hVec(i) = err_a.h;
-    
-    L1Vec_euler(i) = err_a.L1_euler;
-    L2Vec_euler(i) = err_a.L2_euler;
-    LInfVec_euler(i) = err_a.Linf_euler;
-    
-    L1Vec_wendroff(i) = err_b.L1_wendroff;
-    L2Vec_wendroff(i) = err_b.L2_wendroff;
-    LInfVec_wendroff(i) = err_b.Linf_wendroff;
-end
-
-figure
-loglog(hVec, L1Vec_euler, 'o-b', hVec, L2Vec_euler, 's-r', hVec, LInfVec_euler, '+-g', ...
-    hVec(1:3), 1e-1 * hVec(1:3), '-k');
-legend('L^1 error', 'L^2 error', 'L^\infty error', 'f(h) = c * h', ...
-    'location', 'northwest');
-xlabel('h');
-ylabel('Errors'); 
-title('Case Euler');
-
-figure 
-loglog(hVec, L1Vec_wendroff, 'o-b', hVec, L2Vec_wendroff, 's-r', hVec, LInfVec_wendroff, '+-g', ...
-    hVec(1:3), hVec(1:3).^2, '-k');
-legend('L^1 error', 'L^2 error', 'L^\infty error', 'f(h) = c * h^2', ...
-    'location', 'northwest');
-xlabel('h');
-ylabel('Errors'); 
-title('Case Wendroff');

@@ -1,6 +1,6 @@
 function make_movie(x, u_exact, u1, u2, num_frames)
 
-axes tight manual
+% axes tight manual
 
 frames(num_frames) = struct('cdata',[],'colormap',[]);
 t = 1;
