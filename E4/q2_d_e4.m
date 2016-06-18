@@ -6,11 +6,11 @@ eps = 0.001;
 v_max = 10;
 v_min = -10;
 
-f_0 = @(x, v, v0) 0.5 * ((1 / sqrt(2 * pi)) * ( exp(-(v + v0)^2 / 2) + ...
-    exp(-(v - v0)^2 / 2))) * (1 + eps * cos(0.2 * x));
+f_0 = @(x, v) 1 / sqrt(2 * pi) * (0.9 * exp(-v^2 / 2) + ... 
+    0.1 * exp(-(v - 4.5)^2 / 0.5)) * (1 + eps * cos(0.3 * x));
 
-L_x = 2 * pi / 0.2;
-L_t = 50;
+L_x = 2 * pi / 0.3;
+L_t = 60;
 L_v = (v_max - v_min);
 
 N_x = 256;
@@ -32,14 +32,10 @@ E_energy = zeros(N_t, 1);
 f = zeros(N_x, N_v);
 phi_periodic = zeros(N_x + 1, 1);
 
-% v0 = 1.3;
-% v0 = 2.4;
-v0 = 3.0;
-
 % Initialize f
 for i = 1:N_x
     for j = 1:N_v
-        f(i, j) = f_0(x(i), v(j), v0);
+        f(i, j) = f_0(x(i), v(j));
     end
 end
 
@@ -129,11 +125,9 @@ for c = 2:N_t
     density = dv * sum(f, 2);
 end
 
-% wi = 0.0011;
-% wi = 0.2258;
-wi = 0.2845;
+wi = 0.198;
 
-E_ana = 2e-6 * exp(2 * wi * t);
+E_ana = 1e-6 * exp(2 * wi * t);
 
 figure('Position',[100 100 scrsz(3)*0.6 scrsz(4)*0.6])
 semilogy(t, E_energy, t, E_ana, ':','linewidth',3)
