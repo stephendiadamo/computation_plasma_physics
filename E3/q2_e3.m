@@ -127,8 +127,7 @@ for c = 2:N_t
     elseif method == 1
         rho = fft(1 - density);
         E = fftshift(rho)./(1j * kx');
-        E(N_x / 2 + 1) = 0; % setting mean to zero
-
+        E(N_x / 2 + 1) = 0; % setting median to zero
         E = ifft(fftshift(E), 'symmetric');
         E_periodic(1:N_x) = E;
         E_periodic(N_x + 1) = E(1);
