@@ -40,21 +40,21 @@ S = @(x) ppval(Sd, x) / dx;
 
 % Normalization
 spline_normalization = integral(S, knot_vector(1), knot_vector(end));
-disp('--Spline normaliztion--');
+disp('-- Spline normaliztion --');
 disp(spline_normalization);
 
 % Initializing particles
 xk = zeros(Nt, Nk);
 vk = zeros(Nt, Nk);
+% Part c
+% Generate random positions for particles according to g_0
 xk(1, :) = Lx * rand(Nk, 1);
 vk(1, :) = randn(Nk, 1);
 wk = zeros(Nk, 1);
 
-% Part c
-% Generate random positions for particles according to g_0
 % Compute the weights 
-for i = 1:Nk 
-    wk(i) = f_0(xk(1, i), vk(1, i)) / g_0(vk(1, i));
+for marker = 1:Nk 
+    wk(marker) = f_0(xk(1, marker), vk(1, marker)) / g_0(vk(1, marker));
 end
 
 % Part d
@@ -70,7 +70,7 @@ nj(1, :) = get_density(1, xk, vk, xj, Nx, Nk, Lx, S, wk, '', 0);
 
 % Part f
 % Calculating the electric field
-Ej = zeros(T, Nx);
+Ej = zeros(Nt, Nx);
 kx_ind = (1:Nx) - Nx / 2 - 1;
 kx = 2 * pi / Lx * kx_ind;
 
@@ -148,6 +148,7 @@ end
 for time = 1:Nt
     [N, Xedges, Yedges, Xbin, Ybin] = histcounts2(xk(time, :), vk(time, :), xj, vj);
     coord_bin = zeros(Nk, 2);
+    
     Xbin = Xbin + 1;
     Ybin = Ybin + 1;
     for marker = 1:Nk
