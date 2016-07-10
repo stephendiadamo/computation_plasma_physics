@@ -166,17 +166,17 @@ grid off
 shading interp
 axis tight
 
-figure('Position',[100 100 scrsz(3)*0.6 scrsz(4)*0.6])
-pcolor(kkx2,oo,log10(abs(Et_til)))
-set(gca,'fontsize',16)
-xlabel('k_x')
-ylabel('\omega')
-title('log10(|E(k_x,\omega)|)')
-colorbar
-grid off
-shading interp
-ylim([0 2])
-hold on
-plot(kx,1+3/2*kx.^2,'k:','linewidth',0.5)
-legend('white noise simulation','\omega = \omega_p[1 + 3/2 (\lambda_Dk_x)^2]')
-hold off
+% figure('Position',[100 100 scrsz(3)*0.6 scrsz(4)*0.6])
+% pcolor(kkx2,oo,log10(abs(Et_til)))
+% set(gca,'fontsize',16)
+% xlabel('k_x')
+% ylabel('\omega')
+% title('log10(|E(k_x,\omega)|)')
+% colorbar
+% grid off
+% shading interp
+% ylim([0 2])
+% hold on
+% plot(kx,1+3/2*kx.^2,'k:','linewidth',0.5)
+% legend('white noise simulation','\omega = \omega_p[1 + 3/2 (\lambda_Dk_x)^2]')
+% hold off

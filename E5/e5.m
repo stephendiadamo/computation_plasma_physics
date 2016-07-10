@@ -6,6 +6,17 @@ Lx = 2 * pi / k;
 Lv = 10;
 d = 3;
 
+k_vals = [0.5, 0.4, 0.3, 0.2];
+w_r = [1.4156, 1.2850, 1.1598, 1.0640];
+w_i = [-0.1533, -0.0661, -0.0126, -5.51e-5];
+r = [0.3677, 0.4247, 0.6368, 1.1297];
+p = [0.5362, 0.3358, 0.1143, 0.0013];
+k_index = 1;
+
+% Landau Damping:
+E_analytical = @(x, t, k_ind) (2 * eps / k_vals(k_ind)) * r(k_ind) * exp(w_i(k_ind) * t) ...
+                       * cos(w_r(k_ind) * t - p(k_ind)) * sin(k_vals(k_ind) * x);
+                   
 % Initial condition of f at time 0
 f_0 = @(x, v) (1 + eps * cos(k * x)) * (1 / sqrt(2 * pi)) * exp((-v^2) / 2);
 % Importance sampling distribution 
@@ -79,6 +90,17 @@ nj(1, :) = get_density(1, xk, vk, xj, Nx, Nk, Lx, S, wk, '', 0);
 Ej = zeros(Nt, Nx);
 kx_ind = (1:Nx) - Nx / 2 - 1;
 kx = 2 * pi / Lx * kx_ind;
+
+% Part j
+% Analyical solution for electric field 
+E_ana = zeros(Nx, Nt);                   
+for i = 1:Nx
+    for j = 1:Nt
+        E_ana(i, j) = E_analytical(xj(i), t(j), k_index);
+    end
+end
+% Analytical electric field energy w.r.t. time
+E_ana_energy = dx * sum(E_ana .* E_ana) / 2;
 
 density = 1 - nj(1, :)';
 rho = fft(density);
@@ -205,27 +227,34 @@ end
 figure('Position',[800 100 scrsz(3) scrsz(4)])
 
 subplot(2, 2, 1)
-plot(t,momentum)
+plot(t, momentum)
 set(gca,'fontsize',13)
 title('momentum')
 xlabel('t')
 
 subplot(2, 2, 2)
-plot(t,P_energy)
+plot(t, P_energy)
 set(gca,'fontsize',13)
 title('plasma energy')
 xlabel('t')
 
 subplot(2, 2, 3)
-semilogy(t, E_energy)
+semilogy(t, abs(E_energy))
 set(gca,'fontsize',13)
 title('field energy')
 xlabel('t')
 
 subplot(2, 2, 4)
-plot(t,P_energy + E_energy)
+plot(t,abs(P_energy) + abs(E_energy))
 set(gca,'fontsize',13)
 title('total energy')
 xlabel('t')
+
+figure('Position',[100 100 scrsz(3)*0.6 scrsz(4)*0.6])
+semilogy(t, abs(E_energy), t, E_ana_energy);
+set(gca,'fontsize', 13);
+legend('numerics','analytic');
+title('field energy');
+xlabel('t');
 
 display('done');
