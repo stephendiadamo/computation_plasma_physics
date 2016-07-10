@@ -32,7 +32,7 @@ max_f = zeros(N_t, 1);
 mass_f = zeros(N_t, 1);
 L2_f = zeros(N_t, 1);
 
-f_0 = @(x,   v) (1 + 0.01 * cos(2 * pi * x / L_x)) * ... 
+f_0 = @(x, v) (1 + 0.01 * cos(2 * pi * x / L_x)) * ... 
     (1 / sqrt(2 * pi)) * exp(-1 * v^2 / 2);
 
 f = zeros(N_x, N_v);
@@ -108,6 +108,17 @@ E_energy(1) = dx * sum(E .* E) / 2;
 % method = 0 for part a (splitting), and 1 for part d (spectral) 
 method = 1;
 
+% creating shifts for FFT
+kv_ind = (1:N_v) - N_v / 2 - 1;
+kv = 2 * pi / L_v * kv_ind;
+[EE, kkv] = ndgrid(E, kv);
+V_shift = exp(1j * EE .* dt .* kkv);
+
+kx_ind = (1:N_x) - N_x / 2 - 1;
+kx = 2 * pi / L_x * kx_ind;
+[kkx, vv] = ndgrid(kx, v);
+X_shift = exp(-1j * vv .* dt .* kkx);
+
 for c = 2:N_t
     if method == 0
         rhs = (1 - density) * dx^2;
@@ -136,17 +147,6 @@ for c = 2:N_t
     end
     
     E_energy(c) = dx * sum(E .* E) / 2;
-
-    % creating shifts for FFT
-    kv_ind = (1:N_v) - N_v / 2 - 1;
-    kv = 2 * pi / L_v * kv_ind;
-    [EE, kkv] = ndgrid(E, kv);
-    V_shift = exp(1j * EE .* dt .* kkv);
-    
-    kx_ind = (1:N_x) - N_x / 2 - 1;
-    kx = 2 * pi / L_x * kx_ind;
-    [kkx, vv] = ndgrid(kx, v);
-    X_shift = exp(-1j * vv .* dt .* kkx);
     
     Fv = fft(f, [], 2);
     Fv = V_shift .* fftshift(Fv, 2);

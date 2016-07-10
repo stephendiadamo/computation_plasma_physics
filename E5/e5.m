@@ -1,4 +1,5 @@
-eps = 0.01;
+scrsz = get(0,'ScreenSize');
+eps = 0.001;
 T = 20;
 k = 0.5;
 Lx = 2 * pi / k;
@@ -6,7 +7,7 @@ Lv = 10;
 d = 3;
 
 % Initial condition of f at time 0
-f_0 = @(x, v) (1 + eps * cos(k * x)) * (1 / sqrt(2 * pi)) * exp(-v^2 / 2);
+f_0 = @(x, v) (1 + eps * cos(k * x)) * (1 / sqrt(2 * pi)) * exp((-v^2) / 2);
 % Importance sampling distribution 
 g_0 = @(v) (1 / Lx) * (1 / sqrt(2 * pi)) * exp(-v^2 / 2); 
 % Maxwellian 
@@ -14,14 +15,19 @@ M = @(v) exp(-v^2 / 2) / sqrt(2 * pi);
 
 Nv = 32;
 Nx = 32;
-%Nk = 5e4;
-Nk = 3000;
+% Nk = 5e4;
+Nk = 4000;
 
 dt = 0.1;
 dx = Lx / Nx;
 dv = Lv / Nv;
 
 Nt = floor(T / dt) + 1;
+
+% Diagnostics
+momentum = zeros(Nt, 1);
+P_energy = zeros(Nt, 1);
+E_energy = zeros(Nt, 1);
 
 t = linspace(0, T, Nt);
 xj = linspace(0, Lx, Nx);
@@ -80,6 +86,8 @@ E = fftshift(rho) ./ (1j * kx');
 E(Nx / 2 + 1) = 0; % setting median to zero
 Ej(1, :) = ifft(fftshift(E), 'symmetric');
 
+E_energy(1) = dx * sum(E .* E) / 2;
+
 Eh = zeros(Nt, Nk);
 for marker = 1:Nk 
     s = 0;
@@ -110,8 +118,9 @@ for time = 1:Nt-1
     E(Nx / 2 + 1) = 0; % setting median to zero
     Ej(time + 1, :) = ifft(fftshift(E), 'symmetric');
     
-    % Update Eh(time + 1, marker)
+    E_energy(time + 1) = dx * sum(E .* E) / 2;
     
+    % Update Eh(time + 1, marker)    
     % TODO: This doesn't handle the boundaries
     for marker = 1:Nk 
         s = 0;
@@ -149,14 +158,17 @@ for time = 1:Nt
     [N, Xedges, Yedges, Xbin, Ybin] = histcounts2(xk(time, :), vk(time, :), xj, vj);
     coord_bin = zeros(Nk, 2);
     
+    % Clearly a bug if I have to do this!
     Xbin = Xbin + 1;
     Ybin = Ybin + 1;
+    
     for marker = 1:Nk
         coord_bin(marker, 1) = Xbin(marker);
         coord_bin(marker, 2) = Ybin(marker);
     end
 
     f = (1 / Nk) * accumarray(coord_bin, wk, [32, 32]);
+
     f(1, 1) = 0;
     f(32, 32) = 0;
     
@@ -164,20 +176,56 @@ for time = 1:Nt
     f_b(Nx+1,:) = f_b(1,:);
     f_b(:,Nv+1) = f_b(:,1);
     
-   if (mod(time - 1, 40) == 0)
-        figure
-        surf(xx_b,vv_b,f_b - f0_b)
-        title(['t = ' num2str(t(time),'%5.3f')])
-        grid off
-        shading interp
-        colorbar
-        view([0 90])
-        xlim([0 Lx])
-        ylim([-Lv/2 Lv/2])
-        xlabel('x')
-        ylabel('v')
-        drawnow
-   end   
+    u0 = 0;
+    w0 = 0;
+    for i = 1:Nx
+        u0 = u0 + dx*dv*sum( vj .* f(i,:) ); % initial momentum
+        w0 = w0 + 1/2*dx*dv*sum((vj.^2) .* f(i,:) ); % initial plasma energy
+    end
+
+    momentum(time) = u0;
+    P_energy(time) = w0;
+    
+%     if (mod(time - 1, 40) == 0)
+%         figure        
+%         surf(xx_b,vv_b,f_b - f0_b)        
+%         title(['t = ' num2str(t(time),'%5.3f')])
+%         grid off
+%         shading interp
+%         colorbar
+%         view([0 90])
+%         xlim([0 Lx])
+%         ylim([-Lv/2 Lv/2])
+%         xlabel('x')
+%         ylabel('v')
+%         drawnow
+%    end   
 end
+
+figure('Position',[800 100 scrsz(3) scrsz(4)])
+
+subplot(2, 2, 1)
+plot(t,momentum)
+set(gca,'fontsize',13)
+title('momentum')
+xlabel('t')
+
+subplot(2, 2, 2)
+plot(t,P_energy)
+set(gca,'fontsize',13)
+title('plasma energy')
+xlabel('t')
+
+subplot(2, 2, 3)
+semilogy(t, E_energy)
+set(gca,'fontsize',13)
+title('field energy')
+xlabel('t')
+
+subplot(2, 2, 4)
+plot(t,P_energy + E_energy)
+set(gca,'fontsize',13)
+title('total energy')
+xlabel('t')
 
 display('done');
